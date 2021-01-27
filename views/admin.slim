@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title Admin...
+
+  body
+    form method='post' action='/admin'
+      textarea cols=40 rows=8 name='names'
+        = @names.join "\n"
+      ul
+        - @lts.each do |lt|
+          li
+            input type='hidden' name="lts[#{lt.name}]" value='false'
+            input type='checkbox' name="lts[#{lt.name}]" id=lt.name checked=lt.enabled value='true'
+            label for=lt.name
+              = lt.name
+      input type='submit' value='Submit'
+

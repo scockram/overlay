@@ -3,11 +3,19 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'sinatra/streaming'
 
+LowerThird = Struct.new(:name, :enabled) do
+  def enabled?
+    enabled == true
+  end
+end
+
 set server: 'thin'
 set connections: []
+set names: %w{Name1 Name2 Name3}
+set lts: Dir["public/lts/*.png"].map { |f| LowerThird.new(File.basename(f), true) }
 
 get '/' do
-  'open console or overlay...'
+  'open /overlay or /console'
 end
 
 get '/overlay' do
@@ -16,10 +24,21 @@ get '/overlay' do
 end
 
 get '/console' do
-  @names = %w{Name1 Name2 Name3}
-  @lts = Dir["public/lts/*"].map { |f| File.basename(f) }
-  print @lts
+  @names = settings.names
+  @lts = settings.lts.select { |lt| lt.enabled? }.map { |lt| lt.name }
   slim :console
+end
+
+get '/admin' do
+  @names = settings.names
+  @lts = settings.lts
+  slim :admin
+end
+
+post '/admin' do
+  settings.lts = params[:lts].map { |k,v| LowerThird.new(k, v == "true") }
+  settings.names = params[:names].split(/\r?\n/)
+  redirect '/admin'
 end
 
 get '/feed', provides: 'text/event-stream'  do
@@ -34,6 +53,6 @@ post '/feed' do
   settings.connections.each do |out|
     out << "data: #{data}\n\n"
   end
-  204
+  204 # no content
 end
 
