@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    title Overlay
+    link href="overlay.css" rel="stylesheet" type="text/css"
+
+  body
+    #container class="#{@checkerboard ? 'checkerboard' : ''}"
+      #name-display.hide Placeholder
+      #lt-display
+
+    javascript:
+      var es = new EventSource('/feed');
+      es.onmessage = function(e) {
+        const data = JSON.parse(e.data)
+        console.log(data)
+        if (data.event == "name") {
+          showName(data.payload)
+        } else if (data.event == "lt") {
+          showLt(data.payload)
+        } else if (data.event == "clear-lt") {
+          clearLts()
+        }
+      }
+
+      let nameTimer
+      function showName(name) {
+        const el = document.getElementById("name-display")
+        el.innerHTML = name
+        el.classList.remove('hide')
+        clearTimeout(nameTimer)
+        nameTimer = setTimeout(function() {
+          el.classList.add('hide')
+        }, 7000)
+      }
+
+      function showLt(name) {
+        const el = document.createElement('img');
+        const otherEls = Array.from(document.querySelectorAll('#lt-display img'))
+        el.src = "/lts/" + name;
+        document.getElementById("lt-display").appendChild(el)
+        // In a timeout so that the class is definitely applied after creation so
+        // that the animation definitely plays.
+        setTimeout(function () {
+          el.classList.add('show')
+          clearLts(otherEls)
+        }, 20)
+      }
+
+      function clearLts(lts = Array.from(document.querySelectorAll('#lt-display img'))) {
+        for (const lt of lts) {
+          lt.classList.remove('show')
+        }
+      }
+

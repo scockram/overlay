@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    title Console
+    link href="console.css" rel="stylesheet" type="text/css"
+
+  body
+    ul#toolbar
+      li: a href='javascript:window.location.reload(true)' &circlearrowright;
+      li: a href='/admin' target='_blank' &#x26ED;
+
+    ul#name-list
+      - @names.each do |name|
+        li: a.name-tag href='#'= name
+
+    ul#lts-list
+      li: a.clear-lt href='#' Clear LT
+      - @lts.each do |lt|
+        li: a.lt href='#' data-lt="#{lt}"
+          img src="/lts/#{lt}"
+          div: span= lt
+
+    javascript:
+      function sendEvent(e, data) {
+        fetch ('/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(result => { console.log('Success:', result); });
+        e.preventDefault()
+      }
+
+      // Hooks for names
+      for (const link of document.getElementsByClassName('name-tag')) {
+        const data = { "event": "name", "payload": link.innerHTML }
+        link.addEventListener('click', function(e) { sendEvent(e, data); })
+      }
+
+      // Hooks for lower thirds
+      for (const link of document.getElementsByClassName('lt')) {
+        const data = { "event": "lt", "payload": link.dataset.lt }
+        link.addEventListener('click', function(e) { sendEvent(e, data); })
+      }
+
+      for (const link of document.getElementsByClassName('clear-lt')) {
+        const data = { "event": "clear-lt", "payload": "" }
+        link.addEventListener('click', function(e) { sendEvent(e, data); })
+      }
+

@@ -1,0 +1,59 @@
+* { padding: 0; margin: 0; }
+
+#container {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  }
+
+.checkerboard {
+  /* https://gist.github.com/dfrankland/f6fed3e3ccc42e3de482b324126f9542 */
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(135deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(135deg, transparent 75%, #ccc 75%);
+  background-size: 80px 80px;
+  background-position: 0 0, 40px 0, 40px -40px, 0px 40px;
+  }
+
+#name-display {
+  position: absolute;
+  bottom: 100px;
+  left: 100px;
+  padding: 2px 30px 5px 30px;
+  overflow: hidden;
+
+  background: white;
+  color: black;
+
+  font-family: "Segoe UI";
+  font-size: 72px;
+  text-transform: uppercase;
+  font-weight: 700;
+
+  /* Entrance animation */
+  transition: color 0.4s 0.25s, transform 0.4s ease-out 0s;
+  transform-origin: left;
+  transform: scaleX(1);
+  }
+#name-display.hide {
+  color: white;
+  transform: scaleX(0);
+  /* Exit animation is different, play "in reverse" */
+  transition: color 0.3s 0s, transform 0.5s ease-out 0.35s;
+  }
+
+#lt-display img {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: 1s;
+  opacity: 0;
+  }
+#lt-display img.show {
+  opacity: 1;
+  /* Show slightly faster than hiding to reduce non-opacity */
+  transition: 0.8s;
+  }
