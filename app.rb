@@ -1,5 +1,3 @@
-require 'slim'
-require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'sinatra/streaming'
 
@@ -9,7 +7,6 @@ LowerThird = Struct.new(:name, :enabled) do
   end
 end
 
-set server: 'thin'
 set connections: []
 set names: %w{Name1 Name2 Name3}
 set lts: Dir["public/lts/*.png"].map { |f| LowerThird.new(File.basename(f), true) }
