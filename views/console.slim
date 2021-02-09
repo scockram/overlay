@@ -9,16 +9,18 @@ html
       li: a href='javascript:window.location.reload(true)' &circlearrowright;
       li: a href='/admin' target='_blank' &#x26ED;
 
-    ul#name-list
-      - @names.each do |name|
-        li: a.name-tag href='#'= name
+    - if @names.length > 0
+      ul#name-list
+        - @names.each do |name|
+          li: a.name-tag href='#'= name
 
-    ul#lts-list
-      li: a.clear-lt href='#' Clear LT
-      - @lts.each do |lt|
-        li: a.lt href='#' data-lt="#{lt}"
-          img src="/lts/#{lt}"
-          div: span= lt
+    - if @lts.length > 0
+      ul#lts-list
+        li: a.clear-lt href='#' Clear LT
+        - @lts.each do |lt|
+          li: a.lt href='#' data-lt="#{lt}"
+            img src="/lts/#{lt}"
+            div: span= lt
 
     javascript:
       function sendEvent(e, data) {
